@@ -1,0 +1,48 @@
+---
+title: "P curve under no effect"
+output: github_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo=TRUE, comment=NULL)
+```
+
+It is important to understand that the $p$ value is itself a random variable.  In other words, the same (statistical) question will give raise to varying results everytime an experiment is carried out to try to answer it.
+
+How consistent an answer the $p$ value can give can be investigated *in silico* using replication and the `replicate()` function.
+
+Here two sets of numbers $x$ and $y$ are drawn from the same distribution.
+
+```{r exercise1, cache=TRUE}
+R = 100000 # Number of replicated
+n = 10     # Group size
+
+psim1 = replicate(R, {
+    x = rnorm(n, mean=0, sd=1)
+    y = rnorm(n, mean=0, sd=1)
+    
+    t = t.test(x, y)
+    t$p.value
+})
+```
+
+The distribution can be shown using `hist(psim1)` or the ggplot2 functions:
+
+```{r}
+qplot(psim1, geom="histogram", breaks=seq(0, 1, len=30))
+```
+
+A perhaps more pleasant result can be obtained using
+
+```{r}
+ggplot(tibble(p=psim1), aes(p, ..density..)) +
+    geom_histogram(breaks=seq(0, 1, len=30),
+                   fill='white', colour='gray') +
+    ggtitle("Distribution of the p value under the null")
+```
+
+This histogram is called a "$p$ curve".
+
+The interesting point is that a $p$ value when the null hypothesis is indeed true is uniformly distributed between $0$ and $1$.  The $p$ value behaves as if it is drawn from a uniform distribution `runif(1)`.  When the null hypothesis is true, the $p$ curve is flat.
+
+Note that the flatness means that occasionally, $p$ values will reach very small values. In fact, $5$% of the time, the $p$ value will reach significance levels of $0.05$ since the distribution is flat.
