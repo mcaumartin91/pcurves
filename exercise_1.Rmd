@@ -11,6 +11,12 @@ It is important to understand that the $p$ value is itself a random variable.  I
 
 How consistent an answer the $p$ value can give can be investigated *in silico* using replication and the `replicate()` function.
 
+Let's first load the required libraries:
+
+```{r}
+library("tidyverse")
+```
+
 Here two sets of numbers $x$ and $y$ are drawn from the same distribution.
 
 ```{r exercise1, cache=TRUE}
