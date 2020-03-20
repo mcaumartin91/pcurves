@@ -52,3 +52,77 @@ This histogram is called a "$p$ curve".
 The interesting point is that a $p$ value when the null hypothesis is indeed true is uniformly distributed between $0$ and $1$.  The $p$ value behaves as if it is drawn from a uniform distribution `runif(1)`.  When the null hypothesis is true, the $p$ curve is flat.
 
 Note that the flatness means that occasionally, $p$ values will reach very small values. In fact, $5$% of the time, the $p$ value will reach significance levels of $0.05$ since the distribution is flat.
+
+# fonctions
+
+```{r fonctions}
+test<-function(n=10,moy=0,et=1){
+  X=rnorm(n,0,1)
+  Y=rnorm(n,moy,et)
+  
+  result=t.test(X,Y)
+  
+  result$p.value
+}
+
+testexp<-function(n=10,rate=1){
+  X=rexp(n,1)
+  Y=rexp(n,rate)
+  
+  result=t.test(X,Y)
+  
+  result$p.value
+}
+
+```
+
+# Production d'un ensemble de pvalue (100000) avec effet
+
+On lance 1000 fois le tirage et le calcul du test, mais cette fois-ci avec une moyenne à 0.3 ce qui simule un effet significatif 
+
+
+```{r exercise 2}
+p = replicate(100000, test(moy=0.3))
+```
+
+# Affichage de la distribution rnorm effet
+
+```{r }
+hist(p)
+```
+
+On constate une répartition non uniforme des pvalues.
+
+# Production d'un ensemble de pvalue (1000) avec non-standard conditions
+
+On lance 1000 fois le tirage et le calcul du test. 
+
+Comme test a les valeurs par défaut, les distrib X et Y sont identiques.
+
+```{r exercise 3}
+p = replicate(100000, testexp(rate=1))
+
+```
+
+# Affichage de la distribution exp sans effet
+
+```{r }
+hist(p)
+```
+
+On constate une répartition quasi uniforme des pvalues
+
+# Production d'un ensemble de pvalue (1000) avec echelle de 5
+
+```{r exercise 4}
+p = replicate(100000, testexp(rate=5))
+```
+
+# Affichage de la distribution exp avec effet
+
+
+```{r distribution4}
+hist(p)
+```
+
+On constate une répartition divergente des pvalues

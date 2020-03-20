@@ -15,14 +15,14 @@ Let’s first load the required libraries:
 library("tidyverse")
 ```
 
-    ── Attaching packages ─────────────────────── tidyverse 1.3.0 ──
+    -- Attaching packages ------------------------------------ tidyverse 1.3.0 --
 
-    ✓ ggplot2 3.2.1     ✓ purrr   0.3.3
-    ✓ tibble  2.1.3     ✓ dplyr   0.8.4
-    ✓ tidyr   1.0.2     ✓ stringr 1.4.0
-    ✓ readr   1.3.1     ✓ forcats 0.5.0
+    v ggplot2 3.3.0     v purrr   0.3.3
+    v tibble  2.1.3     v dplyr   0.8.5
+    v tidyr   1.0.2     v stringr 1.4.0
+    v readr   1.3.1     v forcats 0.5.0
 
-    ── Conflicts ────────────────────────── tidyverse_conflicts() ──
+    -- Conflicts --------------------------------------- tidyverse_conflicts() --
     x dplyr::filter() masks stats::filter()
     x dplyr::lag()    masks stats::lag()
 
@@ -72,3 +72,80 @@ When the null hypothesis is true, the \(p\) curve is flat.
 Note that the flatness means that occasionally, \(p\) values will reach
 very small values. In fact, \(5\)% of the time, the \(p\) value will
 reach significance levels of \(0.05\) since the distribution is flat.
+
+# fonctions
+
+``` r
+test<-function(n=10,moy=0,et=1){
+  X=rnorm(n,0,1)
+  Y=rnorm(n,moy,et)
+  
+  result=t.test(X,Y)
+  
+  result$p.value
+}
+
+testexp<-function(n=10,rate=1){
+  X=rexp(n,1)
+  Y=rexp(n,rate)
+  
+  result=t.test(X,Y)
+  
+  result$p.value
+}
+```
+
+# Production d’un ensemble de pvalue (100000) avec effet
+
+On lance 1000 fois le tirage et le calcul du test, mais cette fois-ci
+avec une moyenne à 0.3 ce qui simule un effet significatif
+
+``` r
+p = replicate(100000, test(moy=0.3))
+```
+
+# Affichage de la distribution rnorm effet
+
+``` r
+hist(p)
+```
+
+![](exercise_1_files/figure-gfm/unnamed-chunk-4-1.png)<!-- -->
+
+On constate une répartition non uniforme des pvalues.
+
+# Production d’un ensemble de pvalue (1000) avec non-standard conditions
+
+On lance 1000 fois le tirage et le calcul du test.
+
+Comme test a les valeurs par défaut, les distrib X et Y sont identiques.
+
+``` r
+p = replicate(100000, testexp(rate=1))
+```
+
+# Affichage de la distribution exp sans effet
+
+``` r
+hist(p)
+```
+
+![](exercise_1_files/figure-gfm/unnamed-chunk-5-1.png)<!-- -->
+
+On constate une répartition quasi uniforme des pvalues
+
+# Production d’un ensemble de pvalue (1000) avec echelle de 5
+
+``` r
+p = replicate(100000, testexp(rate=5))
+```
+
+# Affichage de la distribution exp avec effet
+
+``` r
+hist(p)
+```
+
+![](exercise_1_files/figure-gfm/distribution4-1.png)<!-- -->
+
+On constate une répartition divergente des pvalues
